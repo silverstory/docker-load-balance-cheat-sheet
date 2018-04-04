@@ -1,0 +1,201 @@
+ubuntu vm ip
+10.0.2.15
+
+docker build -t friendlyhello .
+
+docker run -p 4000:80 friendlyhello
+
+detach mode
+docker run -d -p 4000:80 friendlyhello
+
+docker login
+
+docker tag friendlyhello iameprel/get-started:v1
+
+docker push iameprel/get-started:v1
+
+docker run -d -p 4000:80 iameprel/get-started:v1
+
+docker container ls
+
+stop task / container
+docker container stop 1fa4ab2cf395
+
+docker swarm init
+
+docker stack deploy -c docker-compose.yml getstartedlab
+
+docker service ls
+
+docker service ps getstartedlab_web
+
+docker container ls -q
+
+# You can scale the app by changing the replicas value in docker-compose.yml, saving the change, and re-running the docker stack deploy command:
+
+docker stack deploy -c docker-compose.yml getstartedlab
+
+# Docker performs an in-place update, no need to tear the stack down first or kill any containers.
+
+docker stack rm getstartedlab
+
+docker swarm leave --force
+
+# Create a cluster
+
+# first install docker machine ( I'm on a linux machine )
+
+base=https://github.com/docker/machine/releases/download/v0.14.0 &&
+  curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+  sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+
+# Confirm the version and save scripts to /etc/bash_completion.d or /usr/local/etc/bash_completion.d:
+
+docker-machine version
+
+# Script
+
+base=https://raw.githubusercontent.com/docker/machine/v0.14.0
+for i in docker-machine-prompt.bash docker-machine-wrapper.bash docker-machine.bash
+do
+  sudo wget "$base/contrib/completion/bash/${i}" -P /etc/bash_completion.d
+done
+
+# if the above script did not work
+
+# do this
+
+mkdir docker-machine-completion-scripts
+
+cd docker-machine-completion-scripts
+
+nano docker-machine-prompt.bash
+nano docker-machine-wrapper.bash
+nano docker-machine.bash
+
+# and fill all of it with the code from
+
+https://github.com/docker/machine/tree/master/contrib/completion/bash
+
+# then copy all three of them to /etc/bash_completion.d/
+
+sudo cp docker-machine-prompt.bash /etc/bash_completion.d/docker-machine-prompt.bash
+sudo cp docker-machine-wrapper.bash /etc/bash_completion.d/docker-machine-wrapper.bash
+sudo cp docker-machine.bash /etc/bash_completion.d/docker-machine.bash
+
+# Then you need to run
+
+source /etc/bash_completion.d/docker-machine-prompt.bash
+
+in your bash terminal to tell your setup where it can find the file docker-machine-prompt.bash that you previously downloaded.
+
+# To enable the docker-machine shell prompt,
+# add $(__docker_machine_ps1) to your PS1 setting in ~/.bashrc
+
+PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '
+
+# We are done installing the docker-machine
+
+# Next we install virtualbox
+
+sudo apt-get install virtualbox 
+
+# Now we create the VMs
+
+docker-machine create --driver virtualbox myvm1
+docker-machine create --driver virtualbox myvm2
+
+# LIST THE VMS AND GET THEIR IP ADDRESSES
+
+docker-machine ls
+
+# INITIALIZE THE SWARM AND ADD NODES
+
+docker-machine ssh myvm1 "docker swarm init --advertise-addr <myvm1 ip>"
+
+docker-machine ssh myvm2 "docker swarm join \
+--token <token> \
+<ip>:2377"
+
+e.g. :
+
+docker-machine ssh myvm2 "docker swarm join \
+--token SWMTKN-1-5gxczhshrkcen3m3f03sago7morunlo0baq1nerbq8f4zva6vy-9rkk8ux1amd4ctnil5atjbvo4 \
+192.168.99.100:2377"
+
+docker-machine ssh myvm1
+
+exit
+
+# set a VM to the current active VM
+
+docker-machine env myvm1
+
+eval $(docker-machine env myvm1)
+
+docker-machine ls
+
+# Deploy the app on the swarm manager
+
+docker stack deploy -c docker-compose.yml getstartedlab
+
+docker stack ps getstartedlab
+
+# Cleanup and reboot
+
+  # Stacks and swarms
+
+docker stack rm getstartedlab
+
+# Unsetting docker-machine shell variable settings
+
+eval $(docker-machine env -u)
+
+# Restarting Docker machines
+
+# To restart a machine that’s stopped, run:
+
+docker-machine start <machine-name>
+
+# Stacks
+
+docker-machine ls
+
+# If needed, re-run
+
+docker-machine env myvm1
+
+eval $(docker-machine env myvm1)
+
+http://{myvm1 ip}:8080
+http://192.168.99.100:8080
+
+
+# a modified compose file has happend
+
+docker stack deploy -c docker-compose.yml getstartedlab
+
+docker stack ps getstartedlab
+
+# Persist the data
+
+sudo mkdir /home/docker
+sudo mkdir /home/docker/data
+
+# Create a ./data directory on the manager
+
+docker stack deploy -c docker-compose.yml getstartedlab
+
+# visit count now persists on redis data
+
+http://192.168.99.100
+
+# redis service is now added to manager VM
+
+http://192.168.99.100:8080
+
+# Deploy your app to azure or amazon
+
+https://docs.docker.com/get-started/part6/
+
+https://www.youtube.com/watch?v=LlpyiGAVBVg
