@@ -171,7 +171,31 @@ http://{myvm1 ip}:8080
 http://192.168.99.100:8080
 
 
-# a modified compose file has happend
+# If update happens on source code or Dockerfile
+
+docker build -t friendlyhello:v2
+
+docker tag friendlyhello:v2 iameprel/get-started:v2
+
+docker push iameprel/get-started:v2
+
+Then on docker-compose file
+
+image: iameprel/get-started:v2
+
+After creating a v2 for this image try to Docker pull on this repo
+
+https://cloud.docker.com/swarm/iameprel/repository/docker/iameprel/get-started/general
+
+Using this command
+
+docker pull iameprel/get-started:v2
+
+docker stack deploy -c docker-compose.yml getstartedlab
+
+docker stack ps getstartedlab
+
+# only a modified compose file has happened
 
 docker stack deploy -c docker-compose.yml getstartedlab
 
