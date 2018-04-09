@@ -30,6 +30,11 @@ docker swarm leave --force      # Take down a single node swarm from the manager
 docker swarm join-token (worker|manager)        # Display and manage join tokens
 docker-machine ssh your-vm-name "docker swarm join command"   # Join VM to swarm
 
+# join to the swarm
+docker swarm join --token \
+SWMTKN-1-3v8gkuahxv1p65tsmu1soip0rc6cpy3bo7cq5wppf9fbwlnqry-0i8w6ks7g6bijcm1ix4ihcj11 \
+192.168.3.25:2377
+
 # Cluster and Swarms
 
 docker-machine create --driver virtualbox myvm1 # Create a VM (Mac, Win7, Linux)
