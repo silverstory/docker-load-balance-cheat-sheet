@@ -28,6 +28,7 @@ docker container ls -q                                      # List container IDs
 docker stack rm <appname>                             # Tear down an application
 docker swarm leave --force      # Take down a single node swarm from the manager
 docker swarm join-token (worker|manager)        # Display and manage join tokens
+docker-machine ssh your-vm-name "docker swarm join command"   # Join VM to swarm
 
 # Cluster and Swarms
 
